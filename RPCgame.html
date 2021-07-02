@@ -4,7 +4,12 @@
     <meta charset="utf-8"/>
   </head>
 
-  <body></body>
+  <body>
+    <button type="button" id=rock>Rock!</button> 
+    <button type="button" id=paper>Paper!</button> 
+    <button type="button" id=scissors>Scissors!</button> 
+    <div id="results"></div>
+  </body>
 <script>
 
 function computerPlay() {  
@@ -24,91 +29,88 @@ function computerPlay() {
 
 function playRound (playerSelection, computerSelection){
   let result;
-
-  playerSelection = prompt('Rock, Paper, Scissors, SHOOT: ');   // Ask for player choice
+  //playerSelection = prompt('Rock, Paper, Scissors, SHOOT: ');   // Ask for player choice
   computerSelection = computerPlay();  // Run computer choice
+        if (playerSelection == 'rock') {
+          switch(computerSelection){
+            case 'rock':
+            result = 'You Tied! Rock ties with Rock';
+            break;
+            
+            case 'paper':
+            result = 'You Lose! Paper beats Rock';
+            computerScore++
+            break;
 
-  if (playerSelection == 'rock') {
-    switch(computerSelection){
-      case 'rock':
-      result = 'You Tied! Rock ties with Rock';
-      break;
-      
-      case 'paper':
-      result = 'You Lose! Paper beats Rock';
-      break;
+            case 'scissors':
+            result = 'You Win! Rock beats Scissors';
+            playerScore++; 
+          }
+        } else if (playerSelection == 'paper') {
+          switch(computerSelection){
+            case 'rock':
+            result = 'You Win! Paper beats Rock';
+            playerScore++; 
+            break;
+            
+            case 'paper':
+            result = 'You Tied! Paper ties with Paper';
+            break;
 
-      case 'scissors':
-      result = 'You Win! Rock beats Scissors';
-    }
-  } else if (playerSelection == 'paper') {
-    switch(computerSelection){
-      case 'rock':
-      result = 'You Win! Paper beats Rock';
-      break;
-      
-      case 'paper':
-      result = 'You Tied! Paper ties with Paper';
-      break;
+            case 'scissors':
+            result = 'You Lose! Scissors beats Paper';
+            computerScore++
+          }
+        } else if (playerSelection == 'scissors'){
+          switch(computerSelection){
+            case 'rock':
+            result = 'You Lose! Rock beats Scissors';
+            computerScore++
+            break;
+            
+            case 'paper':
+            result = 'You Win! Scissors beats Paper';
+            playerScore++; 
+            break;
 
-      case 'scissors':
-      result = 'You Lose! Scissors beats Paper';
-    }
-  } else if (playerSelection == 'scissors'){
-    switch(computerSelection){
-      case 'rock':
-      result = 'You Lose! Rock beats Scissors';
-      break;
-      
-      case 'paper':
-      result = 'You Win! Scissors beats Paper';
-      break;
+            case 'scissors':
+            result = 'You Tied! Scissors ties with Scissors';
+          }  
+  } 
 
-      case 'scissors':
-      result = 'You Tied! Scissors ties with Scissors';
-    
-    } 
-    
-  } else { result = "Incorrect Player Input"} // Error message
+totalscoreDisplay.textContent= `The player score is: ${playerScore} and the computer score is: ${computerScore}`
 
-return result;
+roundDisplay.textContent=result;
 
-}
-
-
-function game(){
-  let playerScore = 0;
-  let computerScore = 0;
-
-  var i;
-  for (i = 1; i < 6; ++i) {                             // Loop 5 rounds
-
-    let roundResult = playRound()                       // Play each round with player prompt and computer selection
-    if (roundResult.indexOf("Win") != -1){              // Add player point for win and show score
-      playerScore++;
-      console.log('Round: '+ i);
-      console.log('Computer Score: ' + computerScore + '   Player Score: ' + playerScore);
-    } else if (roundResult.indexOf("Lose") != -1){      // Add computer point for loss and show score
-      computerScore++;
-      console.log('Round: '+ i);
-      console.log('Computer Score: ' + computerScore + '   Player Score: ' + playerScore);
-    } else if (roundResult.indexOf("Tie") != -1){       // No score change
-      console.log('Round: '+ i);
-      console.log('Computer Score: ' + computerScore + '   Player Score: ' + playerScore);
-    } else if (roundResult.indexOf("Incorrect") != -1){ // Show error 
-      --i;
-      console.log('Invalid Entry: Try "Rock", "Paper", or "Scissors"');
-    }
-
+  if(playerScore===5){                                  // First to 5 is the winner and reset score back to 0
+    totalscoreDisplay.textContent="You Win!";
+    roundDisplay.textContent="";
+    playerScore = computerScore = 0;      
+  } else if (computerScore===5){
+    totalscoreDisplay.textContent="You Lose!"
+    roundDisplay.textContent="";
+    playerScore = computerScore = 0;
   }
-
-const finalResult =  (playerScore > computerScore) ? "You Win!"      
-    : (playerScore < computerScore) ? "You Lose!" 
-    : "It's a Tie!"
   
-console.log(finalResult);                                // Display final result after 5 rounds
-
+  return result;
 }
+
+let playerScore = 0;
+let computerScore = 0; 
+
+const resultsDiv = document.querySelector('#results');
+let totalscoreDisplay = document.createElement("div");
+let roundDisplay = document.createElement("div");
+resultsDiv.appendChild(totalscoreDisplay);
+resultsDiv.appendChild(roundDisplay);
+
+function playButton (e) {
+  let playerChoice = e.target.id;
+  playRound(playerChoice,computerPlay());    
+}
+
+const buttons = document.querySelectorAll('button')         
+buttons.forEach(button => button.addEventListener('click', playButton)); // Make buttons playable
 
   </script>
 
